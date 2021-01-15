@@ -5,11 +5,11 @@ set -x
 
 # release.sh will:
 # 1. Modify changelog
-# 2. Run changelog links script
-# 3. Modify version in meta/meta.go
+# 2. Modify version in version/version.go
 # 4. Commit and push changes
 # 5. Create a Git tag
 
+### Script shamelessly taken form hashicorp/terraform-plugin-sdk
 function pleaseUseGNUsed {
     echo "Please install GNU sed to your PATH as 'sed'."
     exit 1
@@ -76,6 +76,9 @@ function commitChanges {
   git add CHANGELOG.md
   modifyVersionFiles
   git add version/version.go
+  git diff origin/main
+
+  git reset --hard
 
   #if [ "$CI" = true ] ; then
       #git commit --gpg-sign="${GPG_KEY_ID}" -m "v${TARGET_VERSION} [skip ci]"
