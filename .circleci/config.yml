@@ -87,6 +87,13 @@ jobs:
     steps:
       - checkout
       - run: make generate-check
+  "sdk release":
+    executor: golang
+    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    steps:
+      - checkout
+      - run: ./scripts/release/release.sh
+
 
 workflows:
   version: 2
@@ -100,3 +107,19 @@ workflows:
       - check-lint
       - check-fmt
       - check-generate
+  release:
+    jobs:
+      - check-generate
+      - check-fmt
+      - check-lint
+      - test-linux
+      - trigger-release:
+        type: approval
+      - "sdk release"
+        requires:
+          - trigger-release
+          - check-generate
+          - check-fmt
+          - check-lint
+          - test-linux
+
